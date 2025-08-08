@@ -4,7 +4,7 @@ Services:
 - grist: no-code spreadsheet platform
 - postgres: relational database
 - redis: nosql database
-- minio: S3 compatible object stire
+- minio: S3 compatible object store
 
 ## usage
 Clone this repository to your local machine, edit the config file to match your environment, and run docker compose.
