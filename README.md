@@ -1,4 +1,4 @@
-# Grist
+# grist
 Services:
 
 - grist: no-code spreadsheet platform
