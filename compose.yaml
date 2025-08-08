@@ -10,6 +10,7 @@ services:
       - GRIST_DB_URL=postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
       - GRIST_DOMAIN=${GRIST_DOMAIN}
       - APP_HOME_URL=https://${GRIST_DOMAIN}
+      - GRIST_SINGLE_ORG=${GRIST_SINGLE_ORG}
     volumes:
       - grist:/persist
     labels:
