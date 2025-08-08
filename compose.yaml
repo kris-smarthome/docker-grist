@@ -4,8 +4,7 @@ services:
     environment:
       GRIST_DEFAULT_EMAIL: ${GRIST_DEFAULT_EMAIL}
       GRIST_SINGLE_ORG: ${GRIST_SINGLE_ORG}
-      APP_DOC_URL: ${HTTPS_DOMAIN}
-  
+      GRIST_SANDBOX_FLAVOR: gvisor
 
       # Postgres database setup
       TYPEORM_DATABASE: grist
