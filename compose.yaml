@@ -5,8 +5,8 @@ services:
       GRIST_DEFAULT_EMAIL: ${GRIST_DEFAULT_EMAIL}
       GRIST_SINGLE_ORG: ${GRIST_SINGLE_ORG}
       GRIST_SANDBOX_FLAVOR: gvisor
-      APP_HOME_URL: https://${HTTPS_DOMAIN}
-      APP_DOC_URL: https://${HTTPS_DOMAIN}
+      GRIST_APP_HOME_URL: https://${HTTPS_DOMAIN}
+      GRIST_APP_DOC_URL: https://${HTTPS_DOMAIN}
 
       # Postgres database setup
       TYPEORM_DATABASE: grist
