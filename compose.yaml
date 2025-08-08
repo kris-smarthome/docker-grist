@@ -29,7 +29,8 @@ services:
       GRIST_DOCS_MINIO_BUCKET: grist-docs
       GRIST_DOCS_MINIO_ENDPOINT: grist-minio
       GRIST_DOCS_MINIO_PORT: 9000
-
+    security_opt:
+      - "no-new-privileges:true"
     volumes:
       # Where to store persistent data, such as documents.
       - grist:/persist
