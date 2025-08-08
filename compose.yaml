@@ -108,6 +108,7 @@ services:
       name: "grist"
       driver: bridge
     traefik:
+      name: "traefik"
       external: true
 
   volumes:
