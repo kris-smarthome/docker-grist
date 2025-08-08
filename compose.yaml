@@ -4,7 +4,12 @@ services:
   grist:
     image: gristlabs/grist:1.0.8 # Change! --> https://hub.docker.com/r/gristlabs/grist/tags
     container_name: grist
-    user: "1000" # Optional Change
+    env_file:
+      - .env
+    environment:
+      - GRIST_DB_URL=postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      - GRIST_DOMAIN=${GRIST_DOMAIN}
+      - APP_HOME_URL=https://${GRIST_DOMAIN}
     volumes:
       - grist:/persist
     labels:
@@ -24,7 +29,6 @@ services:
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
-    #user: "1000" # Optional Change
     environment:
       - POSTGRES_USER
       - POSTGRES_PASSWORD
