@@ -5,7 +5,7 @@ services:
       # Postgres database setup
       TYPEORM_DATABASE: grist
       TYPEORM_USERNAME: grist
-      TYPEORM_HOST: grist-db
+      TYPEORM_HOST: grist-postgres
       TYPEORM_LOGGING: false
       TYPEORM_PASSWORD: ${DATABASE_PASSWORD}
       TYPEORM_PORT: 5432
