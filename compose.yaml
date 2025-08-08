@@ -22,6 +22,10 @@ services:
     image: postgres:15-alpine
     container_name: grist_postgres
     user: "1000" # Optional Change
+    environment:
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_DB
     volumes:
       - postgres:/var/lib/postgresql/data
 
