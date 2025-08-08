@@ -1,66 +1,109 @@
-
-
 services:
   grist:
-    image: gristlabs/grist:1.0.8 # Change! --> https://hub.docker.com/r/gristlabs/grist/tags
-    container_name: grist
-    env_file:
-      - .env
+    image: gristlabs/grist:latest
     environment:
-      - GRIST_DB_URL=postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
-      - GRIST_DOMAIN=${GRIST_DOMAIN}
-      - APP_HOME_URL=https://${GRIST_DOMAIN}
-      - GRIST_SINGLE_ORG=${GRIST_SINGLE_ORG}
-      - GRIST_HIDE_UI_ELEMENTS=${GRIST_HIDE_UI_ELEMENTS}
-      - GRIST_LIST_PUBLIC_SITES=${GRIST_LIST_PUBLIC_SITES}
-      - GRIST_MAX_UPLOAD_ATTACHMENT_MB=${GRIST_MAX_UPLOAD_ATTACHMENT_MB}
-      - GRIST_MAX_UPLOAD_IMPORT_MB=${GRIST_MAX_UPLOAD_IMPORT_MB}
-      - GRIST_ORG_IN_PATH=${GRIST_ORG_IN_PATH}
-      - GRIST_PAGE_TITLE_SUFFIX=${GRIST_PAGE_TITLE_SUFFIX}
-      - GRIST_FORCE_LOGIN=${GRIST_FORCE_LOGIN}
-      - GRIST_SUPPORT_ANON=${GRIST_SUPPORT_ANON}
-      - GRIST_THROTTLE_CPU=${GRIST_THROTTLE_CPU}
-      - TYPEORM_DATABASE=${TYPEORM_DATABASE}
-      - TYPEORM_USERNAME=${TYPEORM_USERNAME}
-      - TYPEORM_HOST=${TYPEORM_HOST}
-      - TYPEORM_LOGGING=${TYPEORM_LOGGING}
-      - TYPEORM_PASSWORD=${TYPEORM_PASSWORD}
-      - TYPEORM_PORT=${TYPEORM_PORT}
-      - TYPEORM_TYPE=${TYPEORM_TYPE}
+      # Postgres database setup
+      TYPEORM_DATABASE: grist
+      TYPEORM_USERNAME: grist
+      TYPEORM_HOST: grist-db
+      TYPEORM_LOGGING: false
+      TYPEORM_PASSWORD: ${DATABASE_PASSWORD}
+      TYPEORM_PORT: 5432
+      TYPEORM_TYPE: postgres
+
+      # Redis setup
+      REDIS_URL: redis://grist-redis
+
+      # MinIO setup. This requires the bucket set up on the MinIO instance with versioning enabled.
+      GRIST_DOCS_MINIO_ACCESS_KEY: grist
+      GRIST_DOCS_MINIO_SECRET_KEY: ${MINIO_PASSWORD}
+      GRIST_DOCS_MINIO_USE_SSL: 0
+      GRIST_DOCS_MINIO_BUCKET: grist-docs
+      GRIST_DOCS_MINIO_ENDPOINT: grist-minio
+      GRIST_DOCS_MINIO_PORT: 9000
+
     volumes:
+      # Where to store persistent data, such as documents.
       - grist:/persist
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.grist.rule=Host(`${GRIST_DOMAIN}`)"
+      - "traefik.http.routers.grist.rule=Host(`${HTTPS_DOMAIN}`)"
       - "traefik.http.routers.grist.entrypoints=websecure"
       - "traefik.http.routers.grist.tls.certresolver=letsencrypt"
       - "traefik.http.services.grist.loadbalancer.server.port=8484"
     #ports:
-    #  - 3000:8080
+    #  - 8484:8484
     depends_on:
-      - postgres
+      - grist-postgres
+      - grist-redis
+      - grist-minio
+      - minio-setup
 
-  postgres:
-    image: postgres:15-alpine
-    container_name: grist_postgres
+  grist-postgres:
+    image: postgres:alpine
+    container_name: grist-postgres
     restart: unless-stopped
     security_opt:
-      - no-new-privileges:true
+      - "no-new-privileges:true"
     environment:
-      - POSTGRES_USER
-      - POSTGRES_PASSWORD
-      - POSTGRES_DB
+        POSTGRES_DB: grist
+        POSTGRES_USER: grist
+        POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
     volumes:
-      - postgres:/var/lib/postgresql/data
+      - grist-postgres:/var/lib/postgresql/data
 
-networks:
-  traefik:
-    external: true
-  grist:
-    driver: bridge
+  grist-redis:
+    image: redis:alpine
+    container_name: grist-redis
+    restart: unless-stopped
+    security_opt:
+      - "no-new-privileges:true"
+    volumes:
+      - grist-redis:/data
 
-volumes:
-  grist:
-    driver: local 
-  postgres:
-    driver: local
+  grist-minio:
+    image: minio/minio:latest
+    container_name: grist-minio
+    restart: unless-stopped
+    security_opt:
+      - "no-new-privileges:true"
+    environment:
+      MINIO_ROOT_USER: grist
+      MINIO_ROOT_PASSWORD: ${MINIO_PASSWORD}
+    volumes:
+      - grist-minio:/data
+    command:
+      server /data --console-address=":9001"
+
+  # This sets up the buckets required in MinIO. It is only needed to make this example work.
+  # It isn't necessary for deployment and can be safely removed.
+  minio-setup:
+    image: minio/mc
+    environment:
+      MINIO_PASSWORD: ${MINIO_PASSWORD}
+    depends_on:
+      grist-minio:
+        condition: service_started
+    restart: on-failure
+    entrypoint: >
+      /bin/sh -c "
+      /usr/bin/mc alias set myminio http://grist-minio:9000 grist '$MINIO_PASSWORD';
+      /usr/bin/mc mb myminio/grist-docs;
+      /usr/bin/mc anonymous set public myminio/grist-docs;
+      /usr/bin/mc version enable myminio/grist-docs;
+  
+  networks:
+    grist:
+      driver: bridge
+    traffic:
+      external: true
+
+  volumes:
+    grist:
+      driver: local
+    grist-postgres:
+      driver: local
+    grist-redis:
+      driver: local
+    grist-minio:
+      driver: local 
