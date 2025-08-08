@@ -103,20 +103,20 @@ services:
     networks:
       - grist
   
-  networks:
-    grist:
-      name: "grist"
-      driver: bridge
-    traefik:
-      name: "traefik"
-      external: true
+networks:
+  grist:
+    name: "grist"
+    driver: bridge
+  traefik:
+    name: "traefik"
+    external: true
 
-  volumes:
-    grist:
-      driver: local
-    grist-postgres:
-      driver: local
-    grist-redis:
-      driver: local
-    grist-minio:
-      driver: local 
+volumes:
+  grist:
+    driver: local
+  grist-postgres:
+    driver: local
+  grist-redis:
+    driver: local
+  grist-minio:
+    driver: local 
