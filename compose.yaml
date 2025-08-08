@@ -34,7 +34,7 @@ services:
       - "traefik.http.routers.grist.rule=Host(`${GRIST_DOMAIN}`)"
       - "traefik.http.routers.grist.entrypoints=websecure"
       - "traefik.http.routers.grist.tls.certresolver=letsencrypt"
-      - "traefik.http.services.grist.loadbalancer.server.port=3000"
+      - "traefik.http.services.grist.loadbalancer.server.port=8484"
     #ports:
     #  - 3000:8080
     depends_on:
