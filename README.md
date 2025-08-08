@@ -1,4 +1,4 @@
-# docker-grist
+# Grist
 Services:
 
 - grist: no-code spreadsheet platform
