@@ -37,7 +37,7 @@ services:
       - grist-postgres
       - grist-redis
       - grist-minio
-      - minio-setup
+    #  - minio-setup
     networks:
       - grist
       - traefik
