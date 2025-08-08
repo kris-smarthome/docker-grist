@@ -2,6 +2,7 @@ services:
   grist:
     image: gristlabs/grist:latest
     environment:
+      GRIST_DEFAULT_EMAIL: ${GRIST_DEFAULT_EMAIL}
       # Postgres database setup
       TYPEORM_DATABASE: grist
       TYPEORM_USERNAME: grist
