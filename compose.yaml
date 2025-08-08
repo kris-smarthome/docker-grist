@@ -6,7 +6,8 @@ services:
       GRIST_SINGLE_ORG: ${GRIST_SINGLE_ORG}
       GRIST_SANDBOX_FLAVOR: gvisor
       APP_HOME_URL: https://${HTTPS_DOMAIN}
-      APP_DOC_URL: https://docs.${HTTPS_DOMAIN}
+      APP_DOC_URL: https://${HTTPS_DOMAIN}
+      APP_DOC_INTERNAL_URL: http://localhost:8484
 
       # Postgres database setup
       TYPEORM_DATABASE: grist
