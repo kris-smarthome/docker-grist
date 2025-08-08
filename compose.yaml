@@ -99,7 +99,7 @@ services:
       /usr/bin/mc alias set myminio http://grist-minio:9000 grist '$MINIO_PASSWORD';
       /usr/bin/mc mb myminio/grist-docs;
       /usr/bin/mc anonymous set public myminio/grist-docs;
-      /usr/bin/mc version enable myminio/grist-docs;
+      /usr/bin/mc version enable myminio/grist-docs;"
     networks:
       - grist
   
