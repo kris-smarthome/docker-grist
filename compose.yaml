@@ -21,7 +21,10 @@ services:
   postgres:
     image: postgres:15-alpine
     container_name: grist_postgres
-    user: "1000" # Optional Change
+    resatrt: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    #user: "1000" # Optional Change
     environment:
       - POSTGRES_USER
       - POSTGRES_PASSWORD
