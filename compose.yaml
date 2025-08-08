@@ -38,6 +38,9 @@ services:
       - grist-redis
       - grist-minio
       - minio-setup
+    networks:
+      - grist
+      - traefik
 
   grist-postgres:
     image: postgres:alpine
@@ -51,6 +54,8 @@ services:
         POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
     volumes:
       - grist-postgres:/var/lib/postgresql/data
+    networks:
+      - grist
 
   grist-redis:
     image: redis:alpine
@@ -60,6 +65,8 @@ services:
       - "no-new-privileges:true"
     volumes:
       - grist-redis:/data
+    networks:
+      - grist
 
   grist-minio:
     image: minio/minio:latest
@@ -74,6 +81,8 @@ services:
       - grist-minio:/data
     command:
       server /data --console-address=":9001"
+    networks:
+      - grist
 
   # This sets up the buckets required in MinIO. It is only needed to make this example work.
   # It isn't necessary for deployment and can be safely removed.
@@ -91,11 +100,14 @@ services:
       /usr/bin/mc mb myminio/grist-docs;
       /usr/bin/mc anonymous set public myminio/grist-docs;
       /usr/bin/mc version enable myminio/grist-docs;
+    networks:
+      - grist
   
   networks:
     grist:
+      name: "grist"
       driver: bridge
-    traffic:
+    traefik:
       external: true
 
   volumes:
