@@ -54,7 +54,7 @@ services:
       - traefik
 
   grist-postgres:
-    image: postgres:17-alpine
+    image: postgres:17
     container_name: grist-postgres
     restart: unless-stopped
     security_opt:
