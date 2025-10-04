@@ -64,7 +64,7 @@ services:
         POSTGRES_USER: grist
         POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
     volumes:
-      - grist-postgres:/var/lib/postgresql/data
+      - grist-postgres:/var/lib/postgresql/18/docker
     networks:
       - grist
 
