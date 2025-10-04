@@ -9,6 +9,8 @@ Services:
 ## usage
 Clone this repository to your local machine, edit the config file to match your environment, and run docker compose.
 
+On first-run, uncomment the minio-setup container to configure minio. 
+
 ```bash
 git clone https://github.com/kris-smarthome/docker-grist.git
 cd docker-grist
