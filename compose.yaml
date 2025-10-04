@@ -54,7 +54,7 @@ services:
       - traefik
 
   grist-postgres:
-    image: postgres:18-alpine
+    image: postgres:17-alpine
     container_name: grist-postgres
     restart: unless-stopped
     security_opt:
@@ -64,7 +64,7 @@ services:
         POSTGRES_USER: grist
         POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
     volumes:
-      - grist-postgres:/var/lib/postgresql/18/docker
+      - grist-postgres:/var/lib/postgresql/data
     networks:
       - grist
 
