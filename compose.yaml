@@ -97,22 +97,22 @@ services:
 
   # This sets up the buckets required in MinIO. It is only needed to make this example work.
   # It isn't necessary for deployment and can be safely removed.
-  #minio-setup:
-  #  image: minio/mc
-  #  environment:
-  #    MINIO_PASSWORD: ${MINIO_PASSWORD}
-  #  depends_on:
-  #    grist-minio:
-  #      condition: service_started
-  #  restart: on-failure
-  #  entrypoint: >
-  #    /bin/sh -c "
-  #    /usr/bin/mc alias set myminio http://grist-minio:9000 grist '$MINIO_PASSWORD';
-  #    /usr/bin/mc mb myminio/grist-docs;
-  #    /usr/bin/mc anonymous set public myminio/grist-docs;
-  #    /usr/bin/mc version enable myminio/grist-docs;"
-  #  networks:
-  #    - grist
+  minio-setup:
+    image: minio/mc
+    environment:
+      MINIO_PASSWORD: ${MINIO_PASSWORD}
+    depends_on:
+      grist-minio:
+        condition: service_started
+    restart: on-failure
+    entrypoint: >
+      /bin/sh -c "
+      /usr/bin/mc alias set myminio http://grist-minio:9000 grist '$MINIO_PASSWORD';
+      /usr/bin/mc mb myminio/grist-docs;
+      /usr/bin/mc anonymous set public myminio/grist-docs;
+      /usr/bin/mc version enable myminio/grist-docs;"
+    networks:
+      - grist
   
 networks:
   grist:
